@@ -235,8 +235,7 @@ model.load_weights('../working/best_model.hdf5')
 model.save('../working/model.hdf5')
 
 
-# Now we can predict some unseen data. In this kernel I want to stick to a little bit unusual approach - I want to take some random pictures for each class from internet and try to predict them, so I quikly grabbed some urls from Google images and put them in lists:
-
+#Webscraping some images of pokemon to test our model and make prediction. Results in png file
 # In[11]:
 
 
@@ -315,5 +314,5 @@ plt.tight_layout()
 # In[ ]:
 
 
-#Thanks to Kaggle for the dataset
+#Thanks to Kaggle for the dataset and user Dr.Hax for help understanding proccess
 
