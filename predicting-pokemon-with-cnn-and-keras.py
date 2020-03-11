@@ -60,43 +60,24 @@ plt.margins(x=0)
 plt.show()
 
 
-# In[3]:
-
-
-# Sort our "counts" dictionary and selecting 5 classes with most number of images
-imbalanced = sorted(counts.items(), key = lambda x: x[1], reverse = True)[:5]
-print(imbalanced)
-
-# Taking only labels, it will come in handy in future
-imbalanced = [i[0] for i in imbalanced]
-print(imbalanced)
-
-
-# Now I want to read all images and add them to list:
-
-# In[4]:
-
 
 X = [] # List for images
 Y = [] # List for labels
 
-# Loop through all classes
 for c in classes:
-    # We take only classes that we defined in 'imbalanced' list
     if c in imbalanced:
         dir_path = os.path.join(path, c)
-        label = imbalanced.index(c) # Our label is an index of class in 'imbalanced' list
+        label = imbalanced.index(c) 
         
-        # Reading, resizing and adding image and label to lists
         for i in os.listdir(dir_path):
             image = cv.imread(os.path.join(dir_path, i))
             
             try:
-                resized = cv.resize(image, (96, 96)) # Resizing images to (96, 96)
+                resized = cv.resize(image, (96, 96)) 
                 X.append(resized)
                 Y.append(label)
             
-            # If we can't read image - we skip it
+           
             except:
                 print(os.path.join(dir_path, i), '[ERROR] can\'t read the file')
                 continue       
@@ -104,58 +85,26 @@ for c in classes:
 print('DONE')
 
 
-# Let's look what we have now:
 
-# In[5]:
-
-
-# Counting appearances of each label in labels list
 obj = Counter(Y)
 
-# Plotting number of images in each class
 fig = plt.figure(figsize = (15, 5))
 sns.barplot(x = [imbalanced[i] for i in obj.keys()], y = list(obj.values())).set_title('Number of images in each class')
 plt.margins(x=0)
 plt.show()
 
 
-# Now we have 5 classes, each with about 300 images.
-
-# In[6]:
-
-
-# Convert list with images to numpy array and reshape it 
 X = np.array(X).reshape(-1, 96, 96, 3)
 
-# Scaling data in array
 X = X / 255.0
 
-# Convert labels to categorical format
 y = to_categorical(Y, num_classes = len(imbalanced))
 
-# Splitting data to train and test datasets
-# I'll use these datasets only for training, for final predictions I'll use random pictures from internet
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = y, shuffle = True, random_state = 666)
 
 
-# In[7]:
 
 
-# Defining ImageDataGenerator Iinstance
-datagen = ImageDataGenerator(rotation_range = 45, # Degree range for random rotations
-                            zoom_range = 0.2, # Range for random zoom 
-                            horizontal_flip = True, # Randomly flip inputs horizontally
-                            width_shift_range = 0.15, # Range for horizontal shift 
-                            height_shift_range = 0.15, # Range for vertical shift 
-                            shear_range = 0.2) # Shear Intensity
-
-datagen.fit(X_train)
-
-
-# In[8]:
-
-
-#Building our machine learning model using Keras
 
 model = Sequential()
 model.add(Conv2D(32, 3, padding = 'same', activation = 'relu', input_shape =(96, 96, 3), kernel_initializer = 'he_normal'))
